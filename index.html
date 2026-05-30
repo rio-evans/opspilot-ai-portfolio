@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OpsPilot AI - Backoffice Workflow Hub</title>
+    <meta name="description" content="OpsPilot AI is a portfolio demo for AI-powered backoffice request intake, workflow management, and Microsoft 365 integration planning.">
+    <meta property="og:title" content="OpsPilot AI">
+    <meta property="og:description" content="AI-powered backoffice workflow demo with task intake, prioritization, kanban, and Microsoft 365 integration planning.">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#17211b">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="メインナビゲーション">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">OP</div>
+          <div>
+            <strong>OpsPilot AI</strong>
+            <span>Backoffice Workflow Hub</span>
+          </div>
+        </div>
+        <nav class="nav-list">
+          <a class="active" href="#dashboard">Dashboard</a>
+          <a href="#intake">AI Intake</a>
+          <a href="#board">Workflow</a>
+          <a href="#m365">Microsoft 365</a>
+          <a href="#automation">Automation</a>
+        </nav>
+        <div class="consulting-note">
+          <span class="eyebrow">Portfolio angle</span>
+          <p>バックオフィスの依頼受付から分類、優先度付け、担当提案、標準化までを1画面でデモできます。</p>
+        </div>
+      </aside>
+
+      <main>
+        <header class="topbar">
+          <div>
+            <span class="eyebrow">AI-enabled operations demo</span>
+            <h1>社内依頼を、迷わず処理できるワークフローへ。</h1>
+          </div>
+          <div class="topbar-actions">
+            <button class="icon-button" id="resetData" title="サンプルデータに戻す" aria-label="サンプルデータに戻す">
+              <span aria-hidden="true">↺</span>
+            </button>
+            <button class="primary-button" id="exportReport">
+              <span aria-hidden="true">↓</span>
+              レポート出力
+            </button>
+          </div>
+        </header>
+
+        <section class="metrics" id="dashboard" aria-label="業務KPI">
+          <article class="metric">
+            <span>未完了タスク</span>
+            <strong id="openCount">0</strong>
+            <small>今日確認が必要</small>
+          </article>
+          <article class="metric">
+            <span>高優先度</span>
+            <strong id="urgentCount">0</strong>
+            <small>AI判定: 期限・金額・影響度</small>
+          </article>
+          <article class="metric">
+            <span>平均リードタイム</span>
+            <strong id="leadTime">0.0日</strong>
+            <small>受付から完了まで</small>
+          </article>
+          <article class="metric">
+            <span>自動化候補</span>
+            <strong id="automationCount">0</strong>
+            <small>繰り返し依頼から抽出</small>
+          </article>
+        </section>
+
+        <section class="work-area">
+          <section class="intake-panel" id="intake" aria-labelledby="intakeTitle">
+            <div class="section-heading">
+              <div>
+                <span class="eyebrow">AI Intake</span>
+                <h2 id="intakeTitle">依頼内容を貼り付け</h2>
+              </div>
+              <span class="status-pill" id="aiStatus">Ready</span>
+            </div>
+
+            <label for="requestText">社内チャットやメールの本文</label>
+            <textarea id="requestText" rows="8" placeholder="例: 来週の取締役会向けに、4月の採用費と広告費を部署別に集計して、前年差分も出してほしいです。金曜午前までに必要です。"></textarea>
+
+            <div class="form-grid">
+              <label>
+                部門
+                <select id="requestDept">
+                  <option>経理</option>
+                  <option>人事</option>
+                  <option>総務</option>
+                  <option>法務</option>
+                  <option>営業管理</option>
+                </select>
+              </label>
+              <label>
+                依頼者
+                <input id="requester" type="text" value="田中">
+              </label>
+            </div>
+
+            <div class="button-row">
+              <button class="primary-button" id="analyzeRequest">
+                <span aria-hidden="true">✦</span>
+                AI分析して登録
+              </button>
+              <button class="secondary-button" id="loadExample">例文を入れる</button>
+            </div>
+
+            <div class="ai-result" id="aiResult" aria-live="polite">
+              <div class="result-empty">分析結果がここに表示されます。</div>
+            </div>
+          </section>
+
+          <section class="insight-panel" aria-labelledby="insightTitle">
+            <div class="section-heading">
+              <div>
+                <span class="eyebrow">Operations intelligence</span>
+                <h2 id="insightTitle">AI改善インサイト</h2>
+              </div>
+            </div>
+            <div class="insight-visual" aria-hidden="true">
+              <div class="flow-node large">依頼</div>
+              <div class="flow-line"></div>
+              <div class="flow-node">分類</div>
+              <div class="flow-line"></div>
+              <div class="flow-node accent">自動化</div>
+            </div>
+            <ul class="insight-list" id="insightList"></ul>
+          </section>
+        </section>
+
+        <section class="board-toolbar" id="board">
+          <div>
+            <span class="eyebrow">Workflow board</span>
+            <h2>処理ステータス</h2>
+          </div>
+          <div class="filters">
+            <input id="searchTasks" type="search" placeholder="タスク検索">
+            <select id="deptFilter" aria-label="部門で絞り込み">
+              <option value="all">全部門</option>
+              <option>経理</option>
+              <option>人事</option>
+              <option>総務</option>
+              <option>法務</option>
+              <option>営業管理</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="kanban" aria-label="ワークフローボード">
+          <div class="column" data-status="受付">
+            <h3>受付</h3>
+            <div class="task-list" id="list-受付"></div>
+          </div>
+          <div class="column" data-status="確認中">
+            <h3>確認中</h3>
+            <div class="task-list" id="list-確認中"></div>
+          </div>
+          <div class="column" data-status="処理中">
+            <h3>処理中</h3>
+            <div class="task-list" id="list-処理中"></div>
+          </div>
+          <div class="column" data-status="完了">
+            <h3>完了</h3>
+            <div class="task-list" id="list-完了"></div>
+          </div>
+        </section>
+
+        <section class="automation-panel">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Microsoft 365 connector</span>
+              <h2 id="m365">Microsoft 365連携</h2>
+            </div>
+            <span class="status-pill" id="m365Status">Demo mode</span>
+          </div>
+          <div class="m365-layout">
+            <div class="m365-config">
+              <label>
+                Entra ID Client ID
+                <input id="m365ClientId" type="text" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+              </label>
+              <label>
+                Planner Plan ID
+                <input id="m365PlanId" type="text" placeholder="Plannerへ登録する場合に使用">
+              </label>
+              <label>
+                対象メール検索
+                <input id="m365MailQuery" type="text" value="subject:依頼 OR subject:申請">
+              </label>
+              <div class="button-row">
+                <button class="primary-button" id="m365ImportMail">
+                  <span aria-hidden="true">✉</span>
+                  Outlookから取込
+                </button>
+                <button class="secondary-button" id="m365BuildPlanner">Planner登録案を作成</button>
+              </div>
+            </div>
+            <div class="m365-output">
+              <div class="m365-tabs" role="tablist" aria-label="Microsoft 365連携結果">
+                <button class="active" type="button" data-m365-tab="overview">概要</button>
+                <button type="button" data-m365-tab="graph">Graph API</button>
+                <button type="button" data-m365-tab="payload">Planner payload</button>
+              </div>
+              <pre id="m365Result" aria-live="polite"></pre>
+            </div>
+          </div>
+        </section>
+
+        <section class="automation-panel" id="automation">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Automation playbook</span>
+              <h2>標準化できる業務</h2>
+            </div>
+          </div>
+          <div class="automation-grid" id="automationGrid"></div>
+        </section>
+      </main>
+    </div>
+
+    <template id="taskTemplate">
+      <article class="task-card">
+        <div class="task-card-head">
+          <span class="priority"></span>
+          <button class="ghost-button" type="button">詳細</button>
+        </div>
+        <h4></h4>
+        <p></p>
+        <div class="task-meta"></div>
+        <div class="task-actions">
+          <button type="button" data-move="back">←</button>
+          <button type="button" data-move="next">→</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
